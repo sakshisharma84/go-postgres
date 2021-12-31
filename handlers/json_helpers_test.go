@@ -41,7 +41,7 @@ func TestFetchValidVehicle(t *testing.T) {
 
 }
 
-func TestCreateVehicle(t *testing.T) {
+func TestCreateVehicleJson(t *testing.T) {
 
     payload := &models.JSONVehicle{
 	VIN: "XVDD",
@@ -67,7 +67,7 @@ func TestCreateVehicle(t *testing.T) {
 }
 
 
-func TestUpdateVehicle(t *testing.T) {
+func TestUpdateVehicleiJson(t *testing.T) {
 
     payload := &models.JSONVehicle{
         VIN: "NXZ8",
@@ -94,7 +94,7 @@ func TestUpdateVehicle(t *testing.T) {
 }
 
 
-func TestUpdateInvalidVehicle(t *testing.T) {
+func TestUpdateInvalidVehicleJson(t *testing.T) {
 
     payload := &models.JSONVehicle{
         VIN: "NXZ8",
@@ -120,7 +120,7 @@ func TestUpdateInvalidVehicle(t *testing.T) {
 
 }
 
-func TestDeleteVehicle(t *testing.T) {
+func TestDeleteVehicleJson(t *testing.T) {
 
     var id int64 = 3
 
@@ -137,7 +137,7 @@ func TestDeleteVehicle(t *testing.T) {
 }
 
 
-func TestDeleteInvalidVehicle(t *testing.T) {
+func TestDeleteInvalidVehicleJson(t *testing.T) {
 
     var id int64 = 2000
 
@@ -153,7 +153,7 @@ func TestDeleteInvalidVehicle(t *testing.T) {
 
 }
 
-func TestGetAllVehicle(t *testing.T) {
+func TestGetAllVehicleJson(t *testing.T) {
 
 
     _, err := GetAllVehicleJson()
@@ -164,7 +164,7 @@ func TestGetAllVehicle(t *testing.T) {
 
 }
 
-func TestInsertVehicle(t *testing.T) {
+func TestInsertVehicleJson(t *testing.T) {
     payload := models.JSONVehicle{
         VIN: "NSS8",
         Make: "Suzuki",
@@ -182,7 +182,7 @@ func TestInsertVehicle(t *testing.T) {
 }
 
 
-func TestSearchVehicle(t *testing.T) {
+func TestSearchVehicleJson(t *testing.T) {
 
 
     req := httptest.NewRequest(http.MethodGet, "/api/search/vehicle?color=black", nil)
@@ -197,7 +197,7 @@ func TestSearchVehicle(t *testing.T) {
 
 }
 
-func TestSearchInvalidVehicle(t *testing.T) {
+func TestSearchInvalidVehicleJson(t *testing.T) {
 
 
     req := httptest.NewRequest(http.MethodGet, "/api/search/vehicle?color=maroon", nil)

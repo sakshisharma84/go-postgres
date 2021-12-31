@@ -78,12 +78,14 @@ func CreateVehicle(w http.ResponseWriter, r *http.Request) {
 	case "protobuf" :
 		fmt.Println("The content is Protobuf")
 		resp := CreateVehicleProto(r, w)
-		//fmt.Fprintf(w, string(resp))
 		w.Write(resp)
                 break
 
 	default :
 		log.Printf("Unsupported Content Type: %s", contentType)
+		w.WriteHeader(http.StatusUnsupportedMediaType)
+		res := []byte(`Unsupported Content Type`)
+		w.Write(res)
     }
 
 }
@@ -124,6 +126,12 @@ func GetVehicle(w http.ResponseWriter, r *http.Request) {
                 xml.NewEncoder(w).Encode(res)
                 break
 
+	case "protobuf" :
+                fmt.Println("The content is Protobuf")
+                resp := GetVehicleProto(r, w, int64(id))
+                w.Write(resp)
+                break
+
         default :
                 log.Printf("Unsupported Content Type: %s", contentType)
     }
@@ -160,6 +168,13 @@ func UpdateVehicle(w http.ResponseWriter, r *http.Request) {
 		res := UpdateVehicleXml(r, w, int64(id))
                 xml.NewEncoder(w).Encode(res)
                 break
+
+	case "protobuf" :
+                fmt.Println("The content is Protobuf")
+                resp := UpdateVehicleProto(r, w, int64(id))
+                w.Write(resp)
+                break
+
         default :
                 log.Printf("Unsupported Content Type: %s", contentType)
     }
@@ -195,6 +210,12 @@ func DeleteVehicle(w http.ResponseWriter, r *http.Request) {
                 fmt.Println("The content is XML")
 		res := DeleteVehicleXml(r, w, int64(id))
                 xml.NewEncoder(w).Encode(res)
+                break
+
+	case "protobuf" :
+                fmt.Println("The content is Protobuf")
+                resp := DeleteVehicleProto(r, w, int64(id))
+                w.Write(resp)
                 break
 
         default :
@@ -265,6 +286,12 @@ func SearchVehicle(w http.ResponseWriter, r *http.Request) {
                 res:= SearchVehicleXml(r, w)
                 // send the response
                 xml.NewEncoder(w).Encode(res)
+                break
+
+        case "protobuf" :
+                fmt.Println("The content is Protobuf")
+                resp := SearchVehicleProto(r, w)
+                w.Write(resp)
                 break
 
         default :
