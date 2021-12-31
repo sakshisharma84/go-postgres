@@ -27,7 +27,7 @@ type JsonResponseList struct {
 }
 
 
-func createVehicleJson(r *http.Request, w http.ResponseWriter) JsonResponse{
+func CreateVehicleJson(r *http.Request, w http.ResponseWriter) JsonResponse{
     fmt.Println("The content is JSON")
     var vehicle models.JSONVehicle
     var res JsonResponse
@@ -38,7 +38,7 @@ func createVehicleJson(r *http.Request, w http.ResponseWriter) JsonResponse{
     if err != nil {
         log.Fatalf("Unable to decode the request body.  %v", err)
     }
-    insertID, err := insertVehicle(vehicle)
+    insertID, err := InsertVehicle(vehicle)
 
     if err != nil {
         w.WriteHeader(400)
@@ -56,11 +56,11 @@ func createVehicleJson(r *http.Request, w http.ResponseWriter) JsonResponse{
     return res
 }
 
-func getVehicleJson(r *http.Request, w http.ResponseWriter, id int64) JsonResponseVehicle {
+func GetVehicleJson(r *http.Request, w http.ResponseWriter, id int64) JsonResponseVehicle {
 
     var res JsonResponseVehicle
     // call the getVehicle function using id to retrieve a vehicle
-    vehicle, err := getVehicle(int64(id))
+    vehicle, err := FetchVehicle(int64(id))
 
     if err != nil {
         w.WriteHeader(500)
@@ -78,7 +78,7 @@ func getVehicleJson(r *http.Request, w http.ResponseWriter, id int64) JsonRespon
     return res
 }
 
-func updateVehicleJson(r *http.Request, w http.ResponseWriter, id int64) JsonResponse {
+func UpdateVehicleJson(r *http.Request, w http.ResponseWriter, id int64) JsonResponse {
     var vehicle models.JSONVehicle
     var res JsonResponse
 
@@ -90,7 +90,7 @@ func updateVehicleJson(r *http.Request, w http.ResponseWriter, id int64) JsonRes
     }
 
     // call updateVehicle to update the vehicle
-    updatedRows, err := updateVehicle(id, vehicle)
+    updatedRows, err := ModifyVehicle(id, vehicle)
 
     if err != nil {
         w.WriteHeader(500)
@@ -112,10 +112,10 @@ func updateVehicleJson(r *http.Request, w http.ResponseWriter, id int64) JsonRes
     return res
 }
 
-func deleteVehicleJson(r *http.Request, w http.ResponseWriter, id int64) JsonResponse {
+func DeleteVehicleJson(r *http.Request, w http.ResponseWriter, id int64) JsonResponse {
 
     var res JsonResponse
-    deletedRows, err := deleteVehicle(int64(id))
+    deletedRows, err := RemoveVehicle(id)
 
     if err != nil {
         w.WriteHeader(500)
@@ -137,14 +137,14 @@ func deleteVehicleJson(r *http.Request, w http.ResponseWriter, id int64) JsonRes
     return res
 }
 
-func getAllVehicleJson() ([]models.JSONVehicle, error) {
+func GetAllVehicleJson() ([]models.JSONVehicle, error) {
     // get all the vehicles in the db
-    vehicles, err := getAllVehicle()
+    vehicles, err := FetchAllVehicle()
     return vehicles, err
 
 }
 // insert vehicle in the DB
-func insertVehicle(vehicle models.JSONVehicle) (int64, error) {
+func InsertVehicle(vehicle models.JSONVehicle) (int64, error) {
 
     // create the postgres db connection
     db := createConnection()
@@ -174,13 +174,13 @@ func insertVehicle(vehicle models.JSONVehicle) (int64, error) {
     return id, nil
 }
 
-func searchVehicleJson(r *http.Request, w http.ResponseWriter) JsonResponseList {
+func SearchVehicleJson(r *http.Request, w http.ResponseWriter) JsonResponseList {
     var res JsonResponseList
     fmt.Println(r.URL.RawQuery)
 
     m, _ := url.ParseQuery(r.URL.RawQuery)
 
-    vehicles, err := getSearchedVehicle(m)
+    vehicles, err := GetSearchedVehicle(m)
 
     if err != nil {
         w.WriteHeader(500)
@@ -201,7 +201,7 @@ func searchVehicleJson(r *http.Request, w http.ResponseWriter) JsonResponseList 
 }
 
 
-func getVehicle(id int64) (models.JSONVehicle, error) {
+func FetchVehicle(id int64) (models.JSONVehicle, error) {
     // create the postgres db connection
     db := createConnection()
 
@@ -236,7 +236,7 @@ func getVehicle(id int64) (models.JSONVehicle, error) {
 
 
 // update vehicle in the DB
-func updateVehicle(id int64, vehicle models.JSONVehicle) (int64, error) {
+func ModifyVehicle(id int64, vehicle models.JSONVehicle) (int64, error) {
 
     // create the postgres db connection
     db := createConnection()
@@ -251,7 +251,7 @@ func updateVehicle(id int64, vehicle models.JSONVehicle) (int64, error) {
     res, err := db.Exec(sqlStatement, id, vehicle.VIN, vehicle.Make, vehicle.Model, vehicle.Color, vehicle.Type, vehicle.Condition)
 
     if err != nil {
-        log.Println("Unable to execute the query. %v", err)
+        log.Printf("Unable to execute the query. %v", err)
         return -1, err
     }
 
@@ -259,7 +259,7 @@ func updateVehicle(id int64, vehicle models.JSONVehicle) (int64, error) {
     rowsAffected, err := res.RowsAffected()
 
     if err != nil {
-        log.Println("Error while checking the affected rows. %v", err)
+        log.Printf("Error while checking the affected rows. %v", err)
         return rowsAffected, err
     }
 
@@ -275,7 +275,7 @@ func updateVehicle(id int64, vehicle models.JSONVehicle) (int64, error) {
 
 
 // delete vehicle in the DB
-func deleteVehicle(id int64) (int64, error) {
+func RemoveVehicle(id int64) (int64, error) {
 
     // create the postgres db connection
     db := createConnection()
@@ -290,7 +290,7 @@ func deleteVehicle(id int64) (int64, error) {
     res, err := db.Exec(sqlStatement, id)
 
     if err != nil {
-        log.Println("Unable to execute the query. %v", err)
+        log.Printf("Unable to execute the query. %v", err)
         return -1, err
     }
 
@@ -298,7 +298,7 @@ func deleteVehicle(id int64) (int64, error) {
     rowsAffected, err := res.RowsAffected()
 
     if err != nil {
-        log.Println("Error while checking the affected rows. %v", err)
+        log.Printf("Error while checking the affected rows. %v", err)
         return -1, nil
     }
 
@@ -311,7 +311,7 @@ func deleteVehicle(id int64) (int64, error) {
 }
 
 
-func getAllVehicle() ([]models.JSONVehicle, error) {
+func FetchAllVehicle() ([]models.JSONVehicle, error) {
     // create the postgres db connection
     db := createConnection()
 
@@ -327,7 +327,7 @@ func getAllVehicle() ([]models.JSONVehicle, error) {
     rows, err := db.Query(sqlStatement)
 
     if err != nil {
-        log.Println("Unable to execute the query. %v", err)
+        log.Printf("Unable to execute the query. %v", err)
         return nil, err
     }
 
@@ -342,7 +342,7 @@ func getAllVehicle() ([]models.JSONVehicle, error) {
         err = rows.Scan(&vehicle.ID, &vehicle.VIN, &vehicle.Make, &vehicle.Model, &vehicle.Color, &vehicle.Type, &vehicle.Condition)
 
         if err != nil {
-            log.Println("Unable to scan the row. %v", err)
+            log.Printf("Unable to scan the row. %v", err)
             return nil, err
         }
         vehicles = append(vehicles, vehicle)
@@ -351,7 +351,7 @@ func getAllVehicle() ([]models.JSONVehicle, error) {
     return vehicles, nil
 }
 
-func getSearchedVehicle(m map[string][]string) ([]models.JSONVehicle, error) {
+func GetSearchedVehicle(m map[string][]string) ([]models.JSONVehicle, error) {
     // create the postgres db connection
     db := createConnection()
 
@@ -373,7 +373,7 @@ func getSearchedVehicle(m map[string][]string) ([]models.JSONVehicle, error) {
     rows, err := db.Query(sqlStatement)
 
     if err != nil {
-        log.Println("Unable to execute the query. %v", err)
+        log.Printf("Unable to execute the query. %v", err)
         return nil, err
     }
 
@@ -390,7 +390,7 @@ func getSearchedVehicle(m map[string][]string) ([]models.JSONVehicle, error) {
         err = rows.Scan(&vehicle.ID, &vehicle.VIN, &vehicle.Make, &vehicle.Model, &vehicle.Color, &vehicle.Type, &vehicle.Condition)
 
         if err != nil {
-            log.Println("Unable to scan the row. %v", err)
+            log.Printf("Unable to scan the row. %v", err)
             return nil, err
         }
         vehicles = append(vehicles, vehicle)

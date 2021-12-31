@@ -27,7 +27,7 @@ type XmlResponseList struct {
 }
 
 
-func createVehicleXml(r *http.Request, w http.ResponseWriter) XmlResponse{
+func CreateVehicleXml(r *http.Request, w http.ResponseWriter) XmlResponse{
     fmt.Println("The content is XML")
     var vehicle models.XMLVehicle
     var res XmlResponse
@@ -38,7 +38,7 @@ func createVehicleXml(r *http.Request, w http.ResponseWriter) XmlResponse{
     if err != nil {
         log.Fatalf("Unable to decode the request body.  %v", err)
     }
-    insertID, err := insertXVehicle(vehicle)
+    insertID, err := InsertXVehicle(vehicle)
 
     if err != nil {
         w.WriteHeader(400)
@@ -56,11 +56,11 @@ func createVehicleXml(r *http.Request, w http.ResponseWriter) XmlResponse{
     return res
 }
 
-func getVehicleXml(r *http.Request, w http.ResponseWriter, id int64) XmlResponseVehicle {
+func GetVehicleXml(r *http.Request, w http.ResponseWriter, id int64) XmlResponseVehicle {
 
     var res XmlResponseVehicle
     // call the getVehicle function using id to retrieve a vehicle
-    vehicle, err := getXVehicle(int64(id))
+    vehicle, err := FetchXVehicle(int64(id))
 
     if err != nil {
         w.WriteHeader(500)
@@ -78,7 +78,7 @@ func getVehicleXml(r *http.Request, w http.ResponseWriter, id int64) XmlResponse
     return res
 }
 
-func updateVehicleXml(r *http.Request, w http.ResponseWriter, id int64) XmlResponse {
+func UpdateVehicleXml(r *http.Request, w http.ResponseWriter, id int64) XmlResponse {
     var vehicle models.XMLVehicle
     var res XmlResponse
 
@@ -90,7 +90,7 @@ func updateVehicleXml(r *http.Request, w http.ResponseWriter, id int64) XmlRespo
     }
 
     // call updateVehicle to update the vehicle
-    updatedRows, err := updateXVehicle(id, vehicle)
+    updatedRows, err := ModifyXVehicle(id, vehicle)
 
     if err != nil {
         w.WriteHeader(500)
@@ -112,10 +112,10 @@ func updateVehicleXml(r *http.Request, w http.ResponseWriter, id int64) XmlRespo
     return res
 }
 
-func deleteVehicleXml(r *http.Request, w http.ResponseWriter, id int64) XmlResponse {
+func DeleteVehicleXml(r *http.Request, w http.ResponseWriter, id int64) XmlResponse {
 
     var res XmlResponse
-    deletedRows, err := deleteXVehicle(int64(id))
+    deletedRows, err := RemoveXVehicle(int64(id))
 
     if err != nil {
         w.WriteHeader(500)
@@ -137,20 +137,20 @@ func deleteVehicleXml(r *http.Request, w http.ResponseWriter, id int64) XmlRespo
     return res
 }
 
-func getAllVehicleXml() ([]models.XMLVehicle, error) {
+func GetAllVehicleXml() ([]models.XMLVehicle, error) {
     // get all the vehicles in the db
-    vehicles, err := getAllXVehicle()
+    vehicles, err := FetchAllXVehicle()
     return vehicles, err
 
 }
 
-func searchVehicleXml(r *http.Request, w http.ResponseWriter) XmlResponseList {
+func SearchVehicleXml(r *http.Request, w http.ResponseWriter) XmlResponseList {
     var res XmlResponseList
     fmt.Println(r.URL.RawQuery)
 
     m, _ := url.ParseQuery(r.URL.RawQuery)
 
-    vehicles, err := getSearchedXVehicle(m)
+    vehicles, err := GetSearchedXVehicle(m)
 
     if err != nil {
         w.WriteHeader(500)
@@ -171,7 +171,7 @@ func searchVehicleXml(r *http.Request, w http.ResponseWriter) XmlResponseList {
 }
 
 // insert vehicle in the DB
-func insertXVehicle(vehicle models.XMLVehicle) (int64, error) {
+func InsertXVehicle(vehicle models.XMLVehicle) (int64, error) {
 
     // create the postgres db connection
     db := createConnection()
@@ -203,7 +203,7 @@ func insertXVehicle(vehicle models.XMLVehicle) (int64, error) {
 
 
 
-func getXVehicle(id int64) (models.XMLVehicle, error) {
+func FetchXVehicle(id int64) (models.XMLVehicle, error) {
     // create the postgres db connection
     db := createConnection()
 
@@ -238,7 +238,7 @@ func getXVehicle(id int64) (models.XMLVehicle, error) {
 
 
 // update vehicle in the DB
-func updateXVehicle(id int64, vehicle models.XMLVehicle) (int64, error) {
+func ModifyXVehicle(id int64, vehicle models.XMLVehicle) (int64, error) {
 
     // create the postgres db connection
     db := createConnection()
@@ -253,7 +253,7 @@ func updateXVehicle(id int64, vehicle models.XMLVehicle) (int64, error) {
     res, err := db.Exec(sqlStatement, id, vehicle.VIN, vehicle.Make, vehicle.Model, vehicle.Color, vehicle.Type, vehicle.Condition)
 
     if err != nil {
-        log.Println("Unable to execute the query. %v", err)
+        log.Printf("Unable to execute the query. %v", err)
         return -1, err
     }
 
@@ -261,7 +261,7 @@ func updateXVehicle(id int64, vehicle models.XMLVehicle) (int64, error) {
     rowsAffected, err := res.RowsAffected()
 
     if err != nil {
-        log.Println("Error while checking the affected rows. %v", err)
+        log.Printf("Error while checking the affected rows. %v", err)
         return rowsAffected, err
     }
 
@@ -277,7 +277,7 @@ func updateXVehicle(id int64, vehicle models.XMLVehicle) (int64, error) {
 
 
 // delete vehicle in the DB
-func deleteXVehicle(id int64) (int64, error) {
+func RemoveXVehicle(id int64) (int64, error) {
 
     // create the postgres db connection
     db := createConnection()
@@ -292,7 +292,7 @@ func deleteXVehicle(id int64) (int64, error) {
     res, err := db.Exec(sqlStatement, id)
 
     if err != nil {
-        log.Println("Unable to execute the query. %v", err)
+        log.Printf("Unable to execute the query. %v", err)
         return -1, err
     }
 
@@ -300,7 +300,7 @@ func deleteXVehicle(id int64) (int64, error) {
     rowsAffected, err := res.RowsAffected()
 
     if err != nil {
-        log.Println("Error while checking the affected rows. %v", err)
+        log.Printf("Error while checking the affected rows. %v", err)
         return -1, nil
     }
 
@@ -313,7 +313,7 @@ func deleteXVehicle(id int64) (int64, error) {
 }
 
 
-func getAllXVehicle() ([]models.XMLVehicle, error) {
+func FetchAllXVehicle() ([]models.XMLVehicle, error) {
     // create the postgres db connection
     db := createConnection()
 
@@ -329,7 +329,7 @@ func getAllXVehicle() ([]models.XMLVehicle, error) {
     rows, err := db.Query(sqlStatement)
 
     if err != nil {
-        log.Println("Unable to execute the query. %v", err)
+        log.Printf("Unable to execute the query. %v", err)
         return nil, err
     }
 
@@ -344,7 +344,7 @@ func getAllXVehicle() ([]models.XMLVehicle, error) {
         err = rows.Scan(&vehicle.ID, &vehicle.VIN, &vehicle.Make, &vehicle.Model, &vehicle.Color, &vehicle.Type, &vehicle.Condition)
 
         if err != nil {
-            log.Println("Unable to scan the row. %v", err)
+            log.Printf("Unable to scan the row. %v", err)
             return nil, err
         }
         vehicles = append(vehicles, vehicle)
@@ -355,7 +355,7 @@ func getAllXVehicle() ([]models.XMLVehicle, error) {
 
 
 
-func getSearchedXVehicle(m map[string][]string) ([]models.XMLVehicle, error) {
+func GetSearchedXVehicle(m map[string][]string) ([]models.XMLVehicle, error) {
     // create the postgres db connection
     db := createConnection()
 
@@ -377,7 +377,7 @@ func getSearchedXVehicle(m map[string][]string) ([]models.XMLVehicle, error) {
     rows, err := db.Query(sqlStatement)
 
     if err != nil {
-        log.Println("Unable to execute the query. %v", err)
+        log.Printf("Unable to execute the query. %v", err)
         return nil, err
     }
 
@@ -394,7 +394,7 @@ func getSearchedXVehicle(m map[string][]string) ([]models.XMLVehicle, error) {
         err = rows.Scan(&vehicle.ID, &vehicle.VIN, &vehicle.Make, &vehicle.Model, &vehicle.Color, &vehicle.Type, &vehicle.Condition)
 
         if err != nil {
-            log.Println("Unable to scan the row. %v", err)
+            log.Printf("Unable to scan the row. %v", err)
             return nil, err
         }
         vehicles = append(vehicles, vehicle)

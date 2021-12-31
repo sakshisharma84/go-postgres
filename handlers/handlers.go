@@ -65,24 +65,25 @@ func CreateVehicle(w http.ResponseWriter, r *http.Request) {
 
     switch contentType {
 	case "application/json" :
-		res := createVehicleJson(r, w)
+		res := CreateVehicleJson(r, w)
 		json.NewEncoder(w).Encode(res)
 		break
 
 	case "application/xml" :
 		fmt.Println("The content is XML")
-		res := createVehicleXml(r, w)
+		res := CreateVehicleXml(r, w)
                 xml.NewEncoder(w).Encode(res)
 		break
 
 	case "protobuf" :
 		fmt.Println("The content is Protobuf")
-		res := createVehicleProto(r, w)
-                fmt.Fprintf(w, string(res))
+		resp := CreateVehicleProto(r, w)
+		//fmt.Fprintf(w, string(resp))
+		w.Write(resp)
                 break
 
 	default :
-		log.Println("Unsupported Content Type: %s", contentType)
+		log.Printf("Unsupported Content Type: %s", contentType)
     }
 
 }
@@ -105,7 +106,7 @@ func GetVehicle(w http.ResponseWriter, r *http.Request) {
     id, err := strconv.Atoi(params["id"])
 
     if err != nil {
-       log.Println("Unable to convert the string into int.  %v", err)
+       log.Printf("Unable to convert the string into int.  %v", err)
 
     }
 
@@ -113,18 +114,18 @@ func GetVehicle(w http.ResponseWriter, r *http.Request) {
 
     switch contentType {
         case "application/json" :
-                res := getVehicleJson(r, w, int64(id))
+                res := GetVehicleJson(r, w, int64(id))
                 json.NewEncoder(w).Encode(res)
                 break
 
         case "application/xml" :
                 fmt.Println("The content is XML")
-		res := getVehicleXml(r, w, int64(id))
+		res := GetVehicleXml(r, w, int64(id))
                 xml.NewEncoder(w).Encode(res)
                 break
 
         default :
-                log.Println("Unsupported Content Type: %s", contentType)
+                log.Printf("Unsupported Content Type: %s", contentType)
     }
 
 }
@@ -143,24 +144,24 @@ func UpdateVehicle(w http.ResponseWriter, r *http.Request) {
     id, err := strconv.Atoi(params["id"])
 
     if err != nil {
-        log.Println("Unable to convert the string into int.  %v", err)
+        log.Printf("Unable to convert the string into int.  %v", err)
     }
 
     contentType := r.Header.Get("Content-type")
 
     switch contentType {
         case "application/json" :
-                res := updateVehicleJson(r, w, int64(id))
+                res := UpdateVehicleJson(r, w, int64(id))
                 json.NewEncoder(w).Encode(res)
                 break
 
         case "application/xml" :
                 fmt.Println("The content is XML")
-		res := updateVehicleXml(r, w, int64(id))
+		res := UpdateVehicleXml(r, w, int64(id))
                 xml.NewEncoder(w).Encode(res)
                 break
         default :
-                log.Println("Unsupported Content Type: %s", contentType)
+                log.Printf("Unsupported Content Type: %s", contentType)
     }
 
 }
@@ -180,24 +181,24 @@ func DeleteVehicle(w http.ResponseWriter, r *http.Request) {
     id, err := strconv.Atoi(params["id"])
 
     if err != nil {
-        log.Println("Unable to convert the string into int.  %v", err)
+        log.Printf("Unable to convert the string into int.  %v", err)
     }
     contentType := r.Header.Get("Content-type")
 
     switch contentType {
         case "application/json" :
-                res := deleteVehicleJson(r, w, int64(id))
+                res := DeleteVehicleJson(r, w, int64(id))
                 json.NewEncoder(w).Encode(res)
                 break
 
         case "application/xml" :
                 fmt.Println("The content is XML")
-		res := deleteVehicleXml(r, w, int64(id))
+		res := DeleteVehicleXml(r, w, int64(id))
                 xml.NewEncoder(w).Encode(res)
                 break
 
         default :
-                log.Println("Unsupported Content Type: %s", contentType)
+                log.Printf("Unsupported Content Type: %s", contentType)
     }
 
 }
@@ -215,9 +216,9 @@ func GetAllVehicle(w http.ResponseWriter, r *http.Request) {
 
     switch contentType {
         case "application/json" :
-                vehicles, err := getAllVehicleJson()
+                vehicles, err := GetAllVehicleJson()
 		if err != nil {
-			log.Println("Unable to get all vehicles. %v", err)
+			log.Printf("Unable to get all vehicles. %v", err)
 			w.WriteHeader(500)
 		}
                 // send the response
@@ -226,9 +227,9 @@ func GetAllVehicle(w http.ResponseWriter, r *http.Request) {
 
         case "application/xml" :
                 fmt.Println("The content is XML")
-		vehicles, err := getAllVehicleXml()
+		vehicles, err := GetAllVehicleXml()
                 if err != nil {
-                        log.Println("Unable to get all vehicles. %v", err)
+                        log.Printf("Unable to get all vehicles. %v", err)
                         w.WriteHeader(500)
                 }
                 // send the response
@@ -236,7 +237,7 @@ func GetAllVehicle(w http.ResponseWriter, r *http.Request) {
                 break
 
         default :
-                log.Println("Unsupported Content Type: %s", contentType)
+                log.Printf("Unsupported Content Type: %s", contentType)
     }
 
 }
@@ -255,19 +256,19 @@ func SearchVehicle(w http.ResponseWriter, r *http.Request) {
 
     switch contentType {
         case "application/json" :
-                res := searchVehicleJson(r, w)
+                res := SearchVehicleJson(r, w)
                 json.NewEncoder(w).Encode(res)
                 break
 
         case "application/xml" :
                 fmt.Println("The content is XML")
-                res:= searchVehicleXml(r, w)
+                res:= SearchVehicleXml(r, w)
                 // send the response
                 xml.NewEncoder(w).Encode(res)
                 break
 
         default :
-                log.Println("Unsupported Content Type: %s", contentType)
+                log.Printf("Unsupported Content Type: %s", contentType)
     }
 
 }
