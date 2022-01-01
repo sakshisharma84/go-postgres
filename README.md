@@ -95,6 +95,21 @@ Search : GET "/api/search/{query}
 Search Operation only returns 1 query result
 
 
+DATABASE script amd SQL file 
+===============================
+These files are contained under sql folder
+
+client.py
+==========
+
+Script to exercise REST endpoints
+
+Following installations needed to run the script:
+
+apt-get install python-requests
+sudo apt-get install -y python-simplejson
+
+
 
 
 
