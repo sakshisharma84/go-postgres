@@ -11,9 +11,9 @@ This server supports CRUD for the following formats:
 ## Expectation
 
 The client is expected to set "Content-type" header in the request
-application/json := for JSON
-application/xml := for XML
-protobuf := for protobuf
+- application/json := for JSON
+- application/xml := for XML
+- protobuf := for protobuf
 
 Any other format is not supported.
 
@@ -87,10 +87,10 @@ Json Body :
 ## Delete: DELETE /api/deletevehicle/{id}
 
 Search : GET "/api/search/{query}
-Example: "/api/search/vehicle?color=black"
+- Example: "/api/search/vehicle?color=black"
 
 
-#Limitations
+# Limitations
 
 Search Operation only returns 1 query result
 
