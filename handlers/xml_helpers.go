@@ -36,7 +36,7 @@ func CreateVehicleXml(r *http.Request, w http.ResponseWriter) XmlResponse{
     err := xml.NewDecoder(r.Body).Decode(&vehicle)
 
     if err != nil {
-        log.Fatalf("Unable to decode the request body.  %v", err)
+        log.Printf("Unable to decode the request body.  %v", err)
     }
     insertID, err := InsertXVehicle(vehicle)
 
@@ -86,7 +86,7 @@ func UpdateVehicleXml(r *http.Request, w http.ResponseWriter, id int64) XmlRespo
     err := xml.NewDecoder(r.Body).Decode(&vehicle)
 
     if err != nil {
-        log.Fatalf("Unable to decode the request body.  %v", err)
+        log.Printf("Unable to decode the request body.  %v", err)
     }
 
     // call updateVehicle to update the vehicle

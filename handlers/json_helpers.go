@@ -36,7 +36,7 @@ func CreateVehicleJson(r *http.Request, w http.ResponseWriter) JsonResponse{
     err := json.NewDecoder(r.Body).Decode(&vehicle)
 
     if err != nil {
-        log.Fatalf("Unable to decode the request body.  %v", err)
+        log.Printf("Unable to decode the request body.  %v", err)
     }
     insertID, err := InsertVehicle(vehicle)
 
@@ -86,7 +86,7 @@ func UpdateVehicleJson(r *http.Request, w http.ResponseWriter, id int64) JsonRes
     err := json.NewDecoder(r.Body).Decode(&vehicle)
 
     if err != nil {
-        log.Fatalf("Unable to decode the request body.  %v", err)
+        log.Printf("Unable to decode the request body.  %v", err)
     }
 
     // call updateVehicle to update the vehicle

@@ -19,7 +19,7 @@ func CreateVehicleProto(r *http.Request, w http.ResponseWriter) ([]byte) {
     request := &vehicle.VehicleRequest{}
     data, err := ioutil.ReadAll(r.Body)
     if err != nil {
-	log.Fatalf("Unable to read message from request : %v", err)
+	log.Printf("Unable to read message from request : %v", err)
     }
     proto.Unmarshal(data, request)
     vin := request.GetVIN()
@@ -108,7 +108,7 @@ func UpdateVehicleProto(r *http.Request, w http.ResponseWriter, id int64) ([]byt
     request := &vehicle.VehicleRequest{}
     data, err := ioutil.ReadAll(r.Body)
     if err != nil {
-        log.Fatalf("Unable to read message from request : %v", err)
+        log.Printf("Unable to read message from request : %v", err)
     }
     proto.Unmarshal(data, request)
     vin := request.GetVIN()
